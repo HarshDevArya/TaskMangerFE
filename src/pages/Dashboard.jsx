@@ -69,6 +69,23 @@ export default function Dashboard() {
     }
   };
 
+  // DELETE task
+  const handleDeleteTask = async (taskId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/usertask/tasks/${taskId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete task");
+      }
+      // Re-fetch tasks after delete
+      fetchTasks();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="container mt-5">
       <h1>Task Dashboard</h1>
@@ -85,6 +102,7 @@ export default function Dashboard() {
               <th>Description</th>
               <th>Status</th>
               <th>Actions</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -103,6 +121,14 @@ export default function Dashboard() {
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>
                   </select>
+                </td>
+                <td>
+                  {/* Delete button */}
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDeleteTask(task._id)}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
