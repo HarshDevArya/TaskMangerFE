@@ -1,11 +1,13 @@
 // src/pages/HomePage.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({ title: "", description: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const BASE_URL = import.meta.env.VITE_BASE_URL || "";
   // Fetch tasks from backend
   const fetchTasks = async () => {
@@ -86,9 +88,33 @@ export default function Dashboard() {
     }
   };
 
+  //   logout
+  const handleLogout = async () => {
+    try {
+      // Send POST request to clear the cookie
+      const response = await fetch(`${BASE_URL}/api/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+      // Optionally redirect to login page
+      navigate("/login");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="container mt-5">
-      <h1>Task Dashboard</h1>
+      <div className="d-flex     justify-content-between ">
+        <h1>Task Dashboard</h1>
+        <button className="btn btn-secondary ms-3" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+
       {error && <p className="text-danger">{error}</p>}
       {loading ? (
         <p>Loading tasks...</p>
