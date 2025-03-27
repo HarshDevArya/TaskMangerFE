@@ -30,6 +30,8 @@ export default function Dashboard() {
       const data = await response.json();
       console.log("taskData", data);
       setTasks(data.tasks);
+      setPage(data.currentPage);
+      setTotalPages(data.totalPages);
     } catch (err) {
       setError(err.message);
     } finally {
